@@ -1,14 +1,17 @@
 import dash_bootstrap_components as dbc
-from dash import Dash, Input, Output, State, dcc, html
+from dash import Dash, Input, Output, State, ctx, dcc, html
 
 from charts.q1_q2 import Q1_NOTE, make_q1
 from charts.q3_q4 import Q3_NOTE, make_q3
+from charts.q5_q6 import Q5_NOTE, make_q5
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
+from search import parse_search
 
 # (id, question, chart function, filter note) for each question chart merged so far
 QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
     ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
+    ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
 ]
 CHART_MAKERS = [maker for _, _, maker, _ in QUESTIONS]
 CHART_IDS = [chart_id for chart_id, _, _, _ in QUESTIONS]
@@ -29,6 +32,9 @@ def chart_card(chart_id, heading, note):
 
 
 filters = dbc.Card(dbc.CardBody([
+    dbc.Input(id="search", type="text",
+              placeholder="Search, e.g. \"Brooklyn 2023 sidewalk shed pedestrians\", then press Enter"),
+    html.Small(id="understood", className="text-muted"),
     dbc.Row([
         dropdown("borough", "Borough", [(b, b.title()) for b in BOROUGHS]),
         dropdown("year", "Year", [(y, y) for y in YEARS]),
@@ -53,15 +59,36 @@ app.layout = dbc.Container([
 ], fluid="lg")
 
 
+def describe(found, ignored):
+    # e.g. "Understood: Brooklyn · 2023 · Sidewalk Shed — ignored: near, school"
+    parts = [found[name].title() if name == "borough" else found[name]
+             for name in ["borough", "year", "work", "person"] if name in found]
+    text = "Understood: " + (" · ".join(parts) or "nothing")
+    if ignored:
+        text += " — ignored: " + ", ".join(ignored)
+    return text
+
+
 @app.callback(
-    [Output(chart_id, "figure") for chart_id in CHART_IDS],
+    [Output(chart_id, "figure") for chart_id in CHART_IDS]
+    + [Output("borough", "value"), Output("year", "value"), Output("work", "value"), Output("person", "value"),
+       Output("understood", "children")],
     Input("generate", "n_clicks"),
+    Input("search", "n_submit"),
     State("borough", "value"), State("year", "value"), State("work", "value"), State("person", "value"),
+    State("search", "value"),
 )
-def update(n_clicks, borough, year, work, person):
+def update(n_clicks, n_submit, borough, year, work, person, text):
     f = {"borough": borough, "year": year, "work": work, "person": person}
-    # every chart is rebuilt with the same four filters
-    return [make_chart(f) for make_chart in CHART_MAKERS]
+    understood = ""
+    # search: fill the dropdowns with what the text mentions, keep the rest
+    if ctx.triggered_id == "search":
+        found = parse_search(text or "")
+        ignored = found.pop("ignored")
+        f.update(found)
+        understood = describe(found, ignored)
+    figures = [make_chart(f) for make_chart in CHART_MAKERS]
+    return figures + [f["borough"], f["year"], f["work"], f["person"], understood]
 
 
 if __name__ == "__main__":
