@@ -2,11 +2,13 @@ import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, State, dcc, html
 
 from charts.q1_q2 import Q1_NOTE, make_q1
+from charts.q3_q4 import Q3_NOTE, make_q3
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
 
 # (id, question, chart function, filter note) for each question chart merged so far
 QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
+    ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
 ]
 CHART_MAKERS = [maker for _, _, maker, _ in QUESTIONS]
 CHART_IDS = [chart_id for chart_id, _, _, _ in QUESTIONS]
