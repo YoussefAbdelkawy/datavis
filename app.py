@@ -1,9 +1,11 @@
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, State, ctx, dcc, html
 
+from charts.map_heat import MAP_NOTE, make_map
 from charts.q1_q2 import Q1_NOTE, make_q1
 from charts.q3_q4 import Q3_NOTE, make_q3
 from charts.q5_q6 import Q5_NOTE, make_q5
+from charts.q7_q8 import Q7_NOTE, make_q7
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
 from search import parse_search
 
@@ -12,9 +14,10 @@ QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
     ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
     ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
+    ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
 ]
-CHART_MAKERS = [maker for _, _, maker, _ in QUESTIONS]
-CHART_IDS = [chart_id for chart_id, _, _, _ in QUESTIONS]
+CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS]
+CHART_IDS = ["map"] + [chart_id for chart_id, _, _, _ in QUESTIONS]
 
 
 def dropdown(dropdown_id, label, options):
@@ -46,6 +49,7 @@ filters = dbc.Card(dbc.CardBody([
 ]), className="mb-4")
 
 charts = html.Div([
+    dbc.Row(dbc.Col(chart_card("map", "Where are the street-work sites and the crashes?", MAP_NOTE)), className="mb-4"),
     dbc.Row([dbc.Col(chart_card(chart_id, heading, note), className="mb-4")
              for chart_id, heading, _, note in QUESTIONS]),
 ])
