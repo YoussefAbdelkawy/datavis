@@ -1,20 +1,44 @@
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, State, ctx, dcc, html
 
+from charts.map_heat import MAP_NOTE, make_map
 from charts.q1_q2 import Q1_NOTE, make_q1
 from charts.q3_q4 import Q3_NOTE, make_q3
 from charts.q5_q6 import Q5_NOTE, make_q5
+from charts.q7_q8 import Q7_NOTE, make_q7
+from charts.q9_q10 import Q9_NOTE, make_q9
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
 from search import parse_search
+
+GITHUB_URL = "https://github.com/YoussefAbdelkawy/datavis"
 
 # (id, question, chart function, filter note) for each question chart merged so far
 QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
     ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
     ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
+    ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
+    ("q9", "Q9. Are trucks a bigger share of crashes near work, in every borough?", make_q9, Q9_NOTE),
 ]
-CHART_MAKERS = [maker for _, _, maker, _ in QUESTIONS]
-CHART_IDS = [chart_id for chart_id, _, _, _ in QUESTIONS]
+CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS]
+CHART_IDS = ["map"] + [chart_id for chart_id, _, _, _ in QUESTIONS]
+
+STORY = [
+    ("Question", "Is the street around street work (sidewalk sheds, scaffolds, fences, demolition) more dangerous "
+     "while the work is active? Sheds and fences push people off the sidewalk and block drivers' view, "
+     "and some sheds stay up for years."),
+    ("Key findings", "Squares that get a lot of work were already riskier in their no-work months: "
+     "0.116 vs 0.213 crashes a month (Q1). No work type stands out once a square is compared with itself (Q3). "
+     "708 sidewalk sheds have stood for more than 2 years and are still up, many in ZIPs like 10025 and 10452 (Q5). "
+     "Near work, driver inattention and pedestrian/cyclist confusion are cited a little more often, "
+     "about +0.5 points each (Q7). Trucks are not clearly a bigger share near work: a bit higher in Manhattan "
+     "and Brooklyn, a bit lower elsewhere (Q9)."),
+    ("Limitations", "No exposure data (traffic or foot counts), so more crashes may just mean more people. "
+     "Permit dates say when work is allowed, not when it really happened. "
+     "This is association, not cause."),
+    ("Benefit to NYC", "DOT and DOB can target safety by how risky a place is, not by permit count alone. "
+     "DOB can follow up on sheds standing for years in ZIPs like 10025 and 10452."),
+]
 
 
 def dropdown(dropdown_id, label, options):
@@ -46,16 +70,32 @@ filters = dbc.Card(dbc.CardBody([
 ]), className="mb-4")
 
 charts = html.Div([
+    dbc.Row(dbc.Col(chart_card("map", "Where are the street-work sites and the crashes?", MAP_NOTE)), className="mb-4"),
     dbc.Row([dbc.Col(chart_card(chart_id, heading, note), className="mb-4")
              for chart_id, heading, _, note in QUESTIONS]),
 ])
+
+story = html.Div([html.H2("Story", className="mt-5 mb-3")] + [
+    dbc.Card(dbc.CardBody([html.H5(title), html.P(text, className="mb-0")]), className="mb-3")
+    for title, text in STORY
+])
+
+footer = html.Footer([
+    html.Hr(),
+    html.P([
+        "Data: ",
+        html.A("DOB NOW: Build – Approved Permits", href="https://data.cityofnewyork.us/d/rbx6-tga4"), " · ",
+        html.A("Motor Vehicle Collisions – Crashes", href="https://data.cityofnewyork.us/d/h9gi-nx95"), " · ",
+        html.A("Code on GitHub", href=GITHUB_URL),
+    ], className="text-muted small"),
+], className="my-4")
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY], title="Are construction zones crash zones?")
 server = app.server
 app.layout = dbc.Container([
     html.H1("Are construction zones crash zones?", className="mt-4"),
     html.P("NYC street-work permits (DOB NOW) × motor vehicle crashes, 2022–2026.", className="lead text-muted"),
-    filters, charts,
+    filters, charts, story, footer,
 ], fluid="lg")
 
 
