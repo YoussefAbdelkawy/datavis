@@ -1,0 +1,13 @@
+/* dark colours for Dash's own dropdowns, to match the DARKLY theme */
+:root {
+  --Dash-Fill-Inverse-Strong: #444;
+  --Dash-Stroke-Strong: #666;
+  --Dash-Stroke-Weak: #555;
+  --Dash-Fill-Interactive-Strong: #F28E2B;
+  --Dash-Fill-Interactive-Weak: rgba(242, 142, 43, 0.15);
+  --Dash-Text-Primary: #fff;
+  --Dash-Text-Strong: #fff;
+  --Dash-Text-Weak: #bbb;
+  --Dash-Fill-Primary-Hover: rgba(255, 255, 255, 0.08);
+  --Dash-Fill-Primary-Active: rgba(255, 255, 255, 0.15);
+}
