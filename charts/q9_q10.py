@@ -1,12 +1,14 @@
 import plotly.express as px
 
-from charts.shared import WORK_COLOURS, chart_note, filter_crashes, label_work, style
+from charts.shared import WORK_COLOURS, chart_note, empty_figure, filter_crashes, label_work, style
 
 Q9_NOTE = chart_note("Year, Work type, Person injured", "Borough (the selected borough is highlighted)")
 
 
 def make_q9(f):
     rows = label_work(filter_crashes({**f, "borough": "All"}), f["work"])
+    if rows.empty:
+        return empty_figure("Truck share of crashes, by borough")
     # % of crashes where vehicle 1 is a truck, per borough and work / no work
     trucks = rows.assign(truck=rows.vehicle_group == "truck")
     q9 = (trucks.groupby(["borough", "work"], observed=True).truck.mean() * 100).reset_index()
