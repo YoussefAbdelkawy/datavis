@@ -1,9 +1,9 @@
 import dash_bootstrap_components as dbc
 from dash import Dash, Input, Output, State, ctx, dcc, html
 
-from charts.map_heat import MAP_NOTE, make_map
+from charts.map_heat import HEAT_NOTE, MAP_NOTE, make_heatmap, make_map
 from charts.q1_q2 import Q1_NOTE, Q2_NOTE, make_q1, make_q2
-from charts.q3_q4 import Q3_NOTE, make_q3
+from charts.q3_q4 import Q3_NOTE, Q4_NOTE, make_q3, make_q4
 from charts.q5_q6 import Q5_NOTE, make_q5
 from charts.q7_q8 import Q7_NOTE, make_q7
 from charts.q9_q10 import Q9_NOTE, make_q9
@@ -17,12 +17,13 @@ QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
     ("q2", "Q2. Comparing a square with itself, how different are its work months from its no-work months?", make_q2, Q2_NOTE),
     ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
+    ("q4", "Q4. How long does each work type really last?", make_q4, Q4_NOTE),
     ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
     ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
     ("q9", "Q9. Are trucks a bigger share of crashes near work, in every borough?", make_q9, Q9_NOTE),
 ]
-CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS]
-CHART_IDS = ["map"] + [chart_id for chart_id, _, _, _ in QUESTIONS]
+CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS] + [make_heatmap]
+CHART_IDS = ["map"] + [chart_id for chart_id, _, _, _ in QUESTIONS] + ["heat"]
 
 STORY = [
     ("Question", "Is the street around street work (sidewalk sheds, scaffolds, fences, demolition) more dangerous "
@@ -74,6 +75,7 @@ charts = html.Div([
     dbc.Row(dbc.Col(chart_card("map", "Where are the street-work sites and the crashes?", MAP_NOTE)), className="mb-4"),
     dbc.Row([dbc.Col(chart_card(chart_id, heading, note), className="mb-4")
              for chart_id, heading, _, note in QUESTIONS]),
+    dbc.Row(dbc.Col(chart_card("heat", "At what hour and weekday do crashes happen near active work?", HEAT_NOTE))),
 ])
 
 story = html.Div([html.H2("Story", className="mt-5 mb-3")] + [
