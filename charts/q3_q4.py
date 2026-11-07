@@ -1,12 +1,14 @@
 import plotly.express as px
 
-from charts.shared import NO_WORK, WORK, chart_note, square_differences, style
+from charts.shared import NO_WORK, WORK, chart_note, empty_figure, square_differences, style
 
 Q3_NOTE = chart_note("Borough, Year, Person injured", "Work type (the selected type is highlighted, not filtered)")
 
 
 def make_q3(f):
     diff = square_differences(f)
+    if diff.empty:
+        return empty_figure("Same-square change by work type")
     # each square counts under its most common work type
     q3 = diff.groupby(level="main_type", observed=True).agg(["mean", "count"]).sort_values("mean").reset_index()
     colours = [WORK if f["work"] in ("All", t) else NO_WORK for t in q3.main_type]

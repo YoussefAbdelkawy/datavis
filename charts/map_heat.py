@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 
-from charts.shared import WORK, chart_note, filter_crashes, filter_jobs, style
+from charts.shared import WORK, chart_note, empty_figure, filter_crashes, filter_jobs, style
 
 MAP_NOTE = chart_note("Borough, Year, Work type, Person injured")
 
@@ -22,6 +22,8 @@ def make_map(f):
     # with a work type chosen, show only crashes where that type was active
     if f["work"] != "All":
         crash_rows = crash_rows[crash_rows.work_types.str.contains(f["work"], regex=False)]
+    if sites.empty and crash_rows.empty:
+        return empty_figure("Street-work sites and crashes")
     # random sample keeps the map fast
     sites = sites.sample(min(3000, len(sites)), random_state=0)
     crash_rows = crash_rows.sample(min(3000, len(crash_rows)), random_state=0)

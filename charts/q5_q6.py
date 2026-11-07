@@ -1,6 +1,6 @@
 import plotly.express as px
 
-from charts.shared import WORK, chart_note, jobs, style
+from charts.shared import WORK, chart_note, empty_figure, jobs, style
 
 Q5_NOTE = chart_note("Borough", "Year, Work type, Person injured (sidewalk sheds standing today)")
 
@@ -10,6 +10,8 @@ def make_q5(f):
     sheds = jobs[(jobs.work_type == "Sidewalk Shed") & (jobs.end == "2026-10-31") & (jobs.days > 730)]
     if f["borough"] != "All":
         sheds = sheds[sheds.borough == f["borough"]]
+    if sheds.empty:
+        return empty_figure("ZIPs with most sheds up > 2 years")
     top = sheds.zip_code.astype(str).value_counts().head(15).sort_values().reset_index()
     fig = px.bar(
         top, x="count", y="zip_code", orientation="h",
