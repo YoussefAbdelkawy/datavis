@@ -17,13 +17,13 @@ QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
     ("q2", "Q2. Comparing a square with itself, how different are its work months from its no-work months?", make_q2, Q2_NOTE),
     ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
-    ("q4", "Q4. How long does each work type really last?", make_q4, Q4_NOTE),
-    ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
+    ("q4", "Q4. Do longer jobs come with more crashes per month in their square?", make_q4, Q4_NOTE),
+    ("q5", "Q5. Did the work vs no-work crash gap in Manhattan change after congestion pricing (5 Jan 2025), compared with other boroughs?", make_q5, Q5_NOTE),
     ("q6", "Q6. Near street work, are the injured more often pedestrians or cyclists?", make_q6, Q6_NOTE),
     ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
     ("q8", "Q8. Do crashes near work peak during working hours?", make_q8, Q8_NOTE),
     ("q9", "Q9. Are trucks a bigger share of crashes near work, in every borough?", make_q9, Q9_NOTE),
-    ("q10", "Q10. Did Manhattan crashes drop after congestion pricing (5 Jan 2025) vs other boroughs?", make_q10, Q10_NOTE),
+    ("q10", "Q10. Do squares with sheds up more than 2 years have a higher crash rate, or a higher pedestrian share of injuries, than squares with short-lived sheds?", make_q10, Q10_NOTE),
 ]
 CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS] + [make_heatmap]
 CHART_IDS = ["map"] + [chart_id for chart_id, _, _, _ in QUESTIONS] + ["heat"]
@@ -35,13 +35,14 @@ STORY = [
     ("Key findings", "Who gets hurt changes: near active work, pedestrians and cyclists are 41% of the injured, "
      "vs 33% without (Q6). The number of crashes does not: squares that get a lot of work were already riskier "
      "in their no-work months (Q1), and the same square shows no overall change with work (Q2). "
-     "No work type stands out (Q3), and Manhattan shows no relative drop after congestion pricing (Q10)."),
+     "No work type stands out (Q3), and how long work lasts doesn't matter: long jobs (Q4) and sheds up for years (Q10) "
+     "have the same crashes per month as short ones. Congestion pricing did not change the work vs no-work gap (Q5)."),
     ("Limitations", "No exposure data (traffic or foot counts), so more crashes may just mean more people. "
      "Permit dates say when work is allowed, not when it really happened. "
      "This is association, not cause."),
     ("Benefit to NYC", "DOT and DOB can target safety by how risky a place is, not by permit count alone, "
      "and protect pedestrians and cyclists first around active sites (covered walkways, marked bike detours). "
-     "DOB can follow up on sheds standing for years in ZIPs like 10025 and 10452."),
+     "A shed carries the same risk every month it stays up, so DOB pushing owners to take sheds down sooner removes risk directly (Q10)."),
 ]
 
 

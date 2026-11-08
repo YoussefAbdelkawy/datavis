@@ -46,13 +46,13 @@ The site reads the small parquet files in `data/`. To rebuild them, run `datavis
 1. Do squares with lots of street work already have more crashes, even in months with no work?
 2. Comparing a square with itself, how different are its work months from its no-work months?
 3. Which work type changes crashes the most within the same square?
-4. How long does each work type really last?
-5. Which ZIPs have the most "permanent" sidewalk sheds (still up, > 2 years)?
+4. Do longer jobs come with more crashes per month in their square?
+5. Did the work vs no-work crash gap in Manhattan change after congestion pricing (5 Jan 2025), compared with other boroughs?
 6. Near street work, are the injured more often pedestrians or cyclists?
 7. Which contributing factors become more common near work?
 8. Do crashes near work peak during working hours?
 9. Are trucks a bigger share of crashes near work, in every borough?
-10. Did Manhattan crashes drop after congestion pricing (5 Jan 2025) vs other boroughs?
+10. Do squares with sheds up more than 2 years have a higher crash rate, or a higher pedestrian share of injuries, than squares with short-lived sheds?
 
 ## Code layout
 ```
@@ -72,14 +72,14 @@ data/           parquet files exported from the notebook
 ```
 
 ## Team
-5 members, 2 questions and 2 charts each. Built in 10 pull requests, 2 per member, merged in order
+5 members, 2 questions and 2 charts each. Built in pull requests, at least 2 per member, merged in order
 (see the Pull requests tab). The notebook's "Team contributions" section has the same split, and
 its "Prompts used" section lists the AI prompts we used.
 
 | Member | PRs | Questions (chart) | Data prep | Website |
 |---|---|---|---|---|
-| Yusef Wael Saeed | 1, 10 | Q1 (scatter), Q10 (line) | dataset choice, EDA, pre-integration cleaning, grid integration, post-integration cleaning, data export | base app, dropdowns, Generate Report, final story, README, deploy |
-| Ibrahim Abdelshafy Ibrahim | 2, 3 | Q3 (bar), Q5 (horizontal bar) | work type per square-month, long-standing sheds by ZIP | dark dropdown style, search mode |
+| Yusef Wael Saeed | 1, 10, 11, 12 | Q1 (scatter), Q10 (two column panels) | dataset choice, EDA, pre-integration cleaning, grid integration, post-integration cleaning, data export | base app, dropdowns, Generate Report, final story, README, deploy |
+| Ibrahim Abdelshafy Ibrahim | 2, 3 | Q3 (bar), Q5 (grouped column) | work type per square-month, same-square gap per year, Manhattan vs other boroughs | dark dropdown style, search mode |
 | Ibrahim Samer Alalamy | 4, 5 | Q7 (horizontal bar), Q9 (grouped bar) | contributing factors cleanup, vehicle type grouping | cross-domain map, story section and footer |
-| Mostafa Amr Elsallamy | 6, 7 | Q2 (histogram), Q4 (box plot) | same-square comparison, job duration | empty-data message, hour × weekday heatmap |
+| Mostafa Amr Elsallamy | 6, 7 | Q2 (histogram), Q4 (scatter) | same-square comparison, job duration and length bands | empty-data message, hour × weekday heatmap |
 | Hassan Hytham Ibrahim | 8, 9 | Q6 (100% stacked bar), Q8 (line) | injuries by person type, crash hour | loading spinner, responsive grid, map hover text |
