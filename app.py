@@ -6,13 +6,13 @@ from charts.q1_q2 import Q1_NOTE, Q2_NOTE, make_q1, make_q2
 from charts.q3_q4 import Q3_NOTE, Q4_NOTE, make_q3, make_q4
 from charts.q5_q6 import Q5_NOTE, Q6_NOTE, make_q5, make_q6
 from charts.q7_q8 import Q7_NOTE, Q8_NOTE, make_q7, make_q8
-from charts.q9_q10 import Q9_NOTE, make_q9
+from charts.q9_q10 import Q9_NOTE, Q10_NOTE, make_q9, make_q10
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
 from search import parse_search
 
 GITHUB_URL = "https://github.com/YoussefAbdelkawy/datavis"
 
-# (id, question, chart function, filter note) for each question chart merged so far
+# (id, question, chart function, filter note) for the 10 question charts
 QUESTIONS = [
     ("q1", "Q1. Do squares with lots of street work already have more crashes, even in months with no work?", make_q1, Q1_NOTE),
     ("q2", "Q2. Comparing a square with itself, how different are its work months from its no-work months?", make_q2, Q2_NOTE),
@@ -23,6 +23,7 @@ QUESTIONS = [
     ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
     ("q8", "Q8. Do crashes near work peak during working hours?", make_q8, Q8_NOTE),
     ("q9", "Q9. Are trucks a bigger share of crashes near work, in every borough?", make_q9, Q9_NOTE),
+    ("q10", "Q10. Did Manhattan crashes drop after congestion pricing (5 Jan 2025) vs other boroughs?", make_q10, Q10_NOTE),
 ]
 CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS] + [make_heatmap]
 CHART_IDS = ["map"] + [chart_id for chart_id, _, _, _ in QUESTIONS] + ["heat"]
@@ -31,16 +32,15 @@ STORY = [
     ("Question", "Is the street around street work (sidewalk sheds, scaffolds, fences, demolition) more dangerous "
      "while the work is active? Sheds and fences push people off the sidewalk and block drivers' view, "
      "and some sheds stay up for years."),
-    ("Key findings", "Squares that get a lot of work were already riskier in their no-work months: "
-     "0.116 vs 0.213 crashes a month (Q1). No work type stands out once a square is compared with itself (Q3). "
-     "708 sidewalk sheds have stood for more than 2 years and are still up, many in ZIPs like 10025 and 10452 (Q5). "
-     "Near work, driver inattention and pedestrian/cyclist confusion are cited a little more often, "
-     "about +0.5 points each (Q7). Trucks are not clearly a bigger share near work: a bit higher in Manhattan "
-     "and Brooklyn, a bit lower elsewhere (Q9)."),
+    ("Key findings", "Who gets hurt changes: near active work, pedestrians and cyclists are 41% of the injured, "
+     "vs 33% without (Q6). The number of crashes does not: squares that get a lot of work were already riskier "
+     "in their no-work months (Q1), and the same square shows no overall change with work (Q2). "
+     "No work type stands out (Q3), and Manhattan shows no relative drop after congestion pricing (Q10)."),
     ("Limitations", "No exposure data (traffic or foot counts), so more crashes may just mean more people. "
      "Permit dates say when work is allowed, not when it really happened. "
      "This is association, not cause."),
-    ("Benefit to NYC", "DOT and DOB can target safety by how risky a place is, not by permit count alone. "
+    ("Benefit to NYC", "DOT and DOB can target safety by how risky a place is, not by permit count alone, "
+     "and protect pedestrians and cyclists first around active sites (covered walkways, marked bike detours). "
      "DOB can follow up on sheds standing for years in ZIPs like 10025 and 10452."),
 ]
 
@@ -137,4 +137,4 @@ def update(n_clicks, n_submit, borough, year, work, person, text):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
