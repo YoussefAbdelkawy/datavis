@@ -4,7 +4,7 @@ from dash import Dash, Input, Output, State, ctx, dcc, html
 from charts.map_heat import HEAT_NOTE, MAP_NOTE, make_heatmap, make_map
 from charts.q1_q2 import Q1_NOTE, Q2_NOTE, make_q1, make_q2
 from charts.q3_q4 import Q3_NOTE, Q4_NOTE, make_q3, make_q4
-from charts.q5_q6 import Q5_NOTE, make_q5
+from charts.q5_q6 import Q5_NOTE, Q6_NOTE, make_q5, make_q6
 from charts.q7_q8 import Q7_NOTE, make_q7
 from charts.q9_q10 import Q9_NOTE, make_q9
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
@@ -19,6 +19,7 @@ QUESTIONS = [
     ("q3", "Q3. Which work type changes crashes the most within the same square?", make_q3, Q3_NOTE),
     ("q4", "Q4. How long does each work type really last?", make_q4, Q4_NOTE),
     ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
+    ("q6", "Q6. Near street work, are the injured more often pedestrians or cyclists?", make_q6, Q6_NOTE),
     ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
     ("q9", "Q9. Are trucks a bigger share of crashes near work, in every borough?", make_q9, Q9_NOTE),
 ]
@@ -71,12 +72,12 @@ filters = dbc.Card(dbc.CardBody([
              className="text-center"),
 ]), className="mb-4")
 
-charts = html.Div([
+charts = dcc.Loading([
     dbc.Row(dbc.Col(chart_card("map", "Where are the street-work sites and the crashes?", MAP_NOTE)), className="mb-4"),
-    dbc.Row([dbc.Col(chart_card(chart_id, heading, note), className="mb-4")
+    dbc.Row([dbc.Col(chart_card(chart_id, heading, note), xs=12, lg=6, className="mb-4")
              for chart_id, heading, _, note in QUESTIONS]),
     dbc.Row(dbc.Col(chart_card("heat", "At what hour and weekday do crashes happen near active work?", HEAT_NOTE))),
-])
+], type="circle")
 
 story = html.Div([html.H2("Story", className="mt-5 mb-3")] + [
     dbc.Card(dbc.CardBody([html.H5(title), html.P(text, className="mb-0")]), className="mb-3")
