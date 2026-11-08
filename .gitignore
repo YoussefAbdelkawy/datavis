@@ -5,6 +5,5 @@ _*.py
 !__init__.py
 _to_delete/
 *_backup*.ipynb
-claude_share
 __pycache__/
 .idea/
