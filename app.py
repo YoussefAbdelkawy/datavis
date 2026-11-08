@@ -5,7 +5,7 @@ from charts.map_heat import HEAT_NOTE, MAP_NOTE, make_heatmap, make_map
 from charts.q1_q2 import Q1_NOTE, Q2_NOTE, make_q1, make_q2
 from charts.q3_q4 import Q3_NOTE, Q4_NOTE, make_q3, make_q4
 from charts.q5_q6 import Q5_NOTE, Q6_NOTE, make_q5, make_q6
-from charts.q7_q8 import Q7_NOTE, make_q7
+from charts.q7_q8 import Q7_NOTE, Q8_NOTE, make_q7, make_q8
 from charts.q9_q10 import Q9_NOTE, make_q9
 from charts.shared import BOROUGHS, PERSONS, WORK_TYPES, YEARS
 from search import parse_search
@@ -21,6 +21,7 @@ QUESTIONS = [
     ("q5", "Q5. Which ZIPs have the most \"permanent\" sidewalk sheds (still up, > 2 years)?", make_q5, Q5_NOTE),
     ("q6", "Q6. Near street work, are the injured more often pedestrians or cyclists?", make_q6, Q6_NOTE),
     ("q7", "Q7. Which contributing factors become more common near work?", make_q7, Q7_NOTE),
+    ("q8", "Q8. Do crashes near work peak during working hours?", make_q8, Q8_NOTE),
     ("q9", "Q9. Are trucks a bigger share of crashes near work, in every borough?", make_q9, Q9_NOTE),
 ]
 CHART_MAKERS = [make_map] + [maker for _, _, maker, _ in QUESTIONS] + [make_heatmap]

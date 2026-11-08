@@ -30,12 +30,15 @@ def make_map(f):
     sites = sites.sample(min(3000, len(sites)), random_state=0)
     crash_rows = crash_rows.sample(min(3000, len(crash_rows)), random_state=0)
     points = pd.concat([
-        pd.DataFrame({"lat": sites.lat, "lon": sites.lon, "layer": "Street-work site"}),
-        pd.DataFrame({"lat": crash_rows.lat, "lon": crash_rows.lon, "layer": "Crash"}),
+        pd.DataFrame({"lat": sites.lat, "lon": sites.lon, "layer": "Street-work site",
+                      "info": sites.work_type.astype(str) + ", from " + sites.start.dt.strftime("%Y-%m-%d")}),
+        pd.DataFrame({"lat": crash_rows.lat, "lon": crash_rows.lon, "layer": "Crash",
+                      "info": "Crash on " + crash_rows.date.dt.strftime("%Y-%m-%d")}),
     ])
     lat, lon, zoom = MAP_VIEW[f["borough"]]
     fig = px.scatter_map(
-        points, lat="lat", lon="lon", color="layer",
+        points, lat="lat", lon="lon", color="layer", hover_name="info",
+        hover_data={"lat": False, "lon": False, "layer": False},
         color_discrete_map={"Street-work site": WORK, "Crash": "#FFFFFF"},
         center={"lat": lat, "lon": lon}, zoom=zoom, opacity=0.6, height=600,
         map_style="carto-darkmatter", title="Street-work sites and crashes",
