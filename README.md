@@ -4,13 +4,16 @@ A one-page Dash site that links NYC street-work permits (DOB NOW: Build – Appr
 with motor vehicle crashes, 2022–2026. Both go on the same ~100 m square × month grid;
 a square-month is "work" if any street-work permit runs there that month.
 
+**Live site:** LIVE_URL_HERE
+
 Data: [DOB NOW permits](https://data.cityofnewyork.us/d/rbx6-tga4) ·
 [Motor Vehicle Collisions – Crashes](https://data.cityofnewyork.us/d/h9gi-nx95)
 
 ## Run it locally
 ```
 python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\activate          # Windows
+source .venv/bin/activate       # macOS / Linux
 pip install -r requirements.txt
 python app.py
 ```
@@ -26,12 +29,18 @@ The site reads the small parquet files in `data/`. To rebuild them, run `datavis
   it fills the dropdowns and builds the report.
 - Under each chart, a note says which filters it uses and why it ignores the others.
 
-## Deploy (Render)
-1. Push this repo to GitHub.
-2. Render → New → Web Service → pick the repo.
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `gunicorn app:server`
-5. Free plan. It sleeps when unused, so the first load takes about a minute.
+## Deploy (Vercel, free)
+1. Sign in at vercel.com with GitHub (Hobby plan, free).
+2. Add New → Project → import this repo. Leave every setting on its default and click Deploy.
+3. Vercel reads `pyproject.toml`: Python 3.13, the dependencies, and `index.py` as the entrypoint
+   (it hands Vercel the Dash app's Flask server). `.vercelignore` keeps the notebook and raw CSVs out.
+4. Open the `.vercel.app` link, pick a filter and click Generate Report to check every chart loads.
+
+## Deploy (Render, alternative)
+1. Render → New → Web Service → pick this repo.
+2. Build command: `pip install -r requirements.txt`
+3. Start command: `gunicorn app:server`
+4. Free plan. It sleeps when unused, so the first load takes about a minute.
 
 ## The 10 questions
 1. Do squares with lots of street work already have more crashes, even in months with no work?
@@ -48,6 +57,8 @@ The site reads the small parquet files in `data/`. To rebuild them, run `datavis
 ## Code layout
 ```
 app.py          layout + one callback
+index.py        Vercel entrypoint (the Dash app's Flask server)
+pyproject.toml  Python version, dependencies, Vercel entrypoint
 search.py       parse_search: turns search text into filters
 charts/
   shared.py     data loading, filters, colours, chart note helper
@@ -61,12 +72,14 @@ data/           parquet files exported from the notebook
 ```
 
 ## Team
-Built in 10 pull requests, one per part, merged in order (see the Pull requests tab).
+5 members, 2 questions and 2 charts each. Built in 10 pull requests, 2 per member, merged in order
+(see the Pull requests tab). The notebook's "Team contributions" section has the same split, and
+its "Prompts used" section lists the AI prompts we used.
 
-| Member | Parts | Contribution |
-|---|---|---|
-| Yusef Wael Saeed | 1, 6 | Q1, Q2 · base app, data, notebook · empty-data message |
-| Ibrahim Abdelshafy Ibrahim | 2, 7 | Q3, Q4 · dark dropdown style · hour × weekday heatmap |
-| Ibrahim Samer Alalamy | 3, 8 | Q5, Q6 · search mode · loading spinner and responsive grid |
-| Mostafa Amr Elsallamy | 4, 9 | Q7, Q8 · cross-domain map · map hover text |
-| Hassan Hytham Ibrahim | 5, 10 | Q9, Q10 · story and footer · README and Render deploy |
+| Member | PRs | Questions (chart) | Data prep | Website |
+|---|---|---|---|---|
+| Yusef Wael Saeed | 1, 10 | Q1 (scatter), Q10 (line) | dataset choice, EDA, pre-integration cleaning, grid integration, post-integration cleaning, data export | base app, dropdowns, Generate Report, final story, README, deploy |
+| Ibrahim Abdelshafy Ibrahim | 2, 3 | Q3 (bar), Q5 (horizontal bar) | work type per square-month, long-standing sheds by ZIP | dark dropdown style, search mode |
+| Ibrahim Samer Alalamy | 4, 5 | Q7 (horizontal bar), Q9 (grouped bar) | contributing factors cleanup, vehicle type grouping | cross-domain map, story section and footer |
+| Mostafa Amr Elsallamy | 6, 7 | Q2 (histogram), Q4 (box plot) | same-square comparison, job duration | empty-data message, hour × weekday heatmap |
+| Hassan Hytham Ibrahim | 8, 9 | Q6 (100% stacked bar), Q8 (line) | injuries by person type, crash hour | loading spinner, responsive grid, map hover text |

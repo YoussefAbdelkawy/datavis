@@ -1,0 +1,15 @@
+[project]
+name = "datavis"
+version = "1.0.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "dash==4.5.0",
+    "dash-bootstrap-components==2.0.4",
+    "plotly==7.1.0",
+    "pandas==3.1.0",
+    "pyarrow==26.0.1",
+]
+
+# Vercel: use index.py (the Flask server) as the entrypoint, not app.py (the Dash object)
+[tool.vercel]
+entrypoint = "index:app"
